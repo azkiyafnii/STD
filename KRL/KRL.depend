@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1733069131 source:c:\c++\krl\main.cpp
+	<iostream>
+	"KRL.h"
+
+1733376133 c:\c++\krl\krl.h
+	<iostream>
+
