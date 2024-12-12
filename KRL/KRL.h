@@ -23,7 +23,7 @@ struct Stasiun{
 };
 
 struct Rute {
-    string namaStasiun;
+    adrStasiun adrS;
     int jarak;
     int harga;
     adrRute nextRute;
@@ -33,16 +33,17 @@ struct Graph{
     adrStasiun firstStasiun;
 };
 
-void createStasiun(string nama , adrStasiun &s);
-void addStasiun(Graph &G, string nama);
+void createStasiun(string name , adrStasiun &s);
+void createRute(string newNamaStasiun, int jarak, int harga, adrRute &r);
 void initGraph(Graph &G);
 void buildGraph(Graph &G);
-void createRute(string newNamaStasiun, int jarak, int harga, adrRute &r);
+void printStasiun(Graph G);
+void printRute(Graph G);
+void addStasiun(Graph &G, string nama);
 void addRute(adrRute &r, string namaStasiun, int jarak, int harga);
-void print(Graph G);
-void addStasiun(Graph &G, string namaStasiun);
-void addRute(Graph &G, string namaStasiun, string namaStasiunTujuan, int jarak, int harga);
 void deleteStasiun(Graph &G, string namaStasiun);
 void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan);
-
+void menu();
+int degree(Graph &G, adrStasiun v);
+adrStasiun stasiunTeramai(G Graph);
 #endif // KRL_H_INCLUDED
