@@ -44,5 +44,5 @@ void deleteStasiun(Graph &G, string namaStasiun);
 void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan);
 void menu();
 int degree(Graph &G, adrStasiun v);
-adrStasiun stasiunTeramai(G Graph);
+adrStasiun stasiunTeramai(Graph G);
 #endif // KRL_H_INCLUDED

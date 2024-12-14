@@ -5,6 +5,10 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
+    Graph G;
+    initGraph(G);
+
+    buildGraph(G);
+    printStasiun(G);
     return 0;
 }
