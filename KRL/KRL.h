@@ -1,5 +1,6 @@
 #ifndef KRL_H_INCLUDED
 #define KRL_H_INCLUDED
+#include <iostream>
 #define nama(s) s->nama
 #define nextStasiun(s) s->nextStasiun
 #define firstRute(s) s->firstRute
@@ -8,8 +9,6 @@
 #define harga(r) r->harga
 #define nextRute(r) r->nextRute
 #define firstStasiun(G) G.firstStasiun
-
-#include <iostream>
 
 using namespace std;
 
