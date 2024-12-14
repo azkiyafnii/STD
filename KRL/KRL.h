@@ -4,6 +4,7 @@
 #define nama(s) s->nama
 #define nextStasiun(s) s->nextStasiun
 #define firstRute(s) s->firstRute
+#define adrS(r) r->adrS
 #define namaStasiun(r) r->namaStasiun
 #define jarak(r) r->jarak
 #define harga(r) r->harga
