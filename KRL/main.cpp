@@ -17,6 +17,7 @@ int main() {
     addStasiun(G, "Bogor");
     addStasiun(G, "Jatinegara");
     addStasiun(G, "Cikarang");
+    addRute(G, "Tangerang", "Duri", 50, 3000);
 
 
     while (pilihan != 8) {
@@ -36,9 +37,7 @@ int main() {
                 cin >> jarak;
                 cout << "Masukkan harga: ";
                 cin >> harga;
-                asal = G.firstStasiun;
-                while (asal != NULL && asal->nama != nama) asal = asal->nextStasiun;
-                if (asal != NULL) addRute(asal->firstRute, tujuan, jarak, harga);
+                addRute(G, nama, tujuan, jarak, harga);
                 break;
             case 3:
                 cout << "Masukkan nama stasiun yang akan dihapus: ";

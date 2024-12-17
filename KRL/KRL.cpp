@@ -76,11 +76,51 @@ void addStasiun(Graph &G, string nama) {
     }
 }
 
-void addRute(adrRute &r, string namaStasiun, int jarak, int harga) {
-    adrRute newR;
-    createRute(namaStasiun, jarak, harga, newR);
-    newR->nextRute = r;
-    r = newR;
+adrStasiun findStasiun(Graph G, string data){
+    adrStasiun p;
+    if (firstStasiun(G)==NULL){
+        return NULL;
+    }else{
+        p = firstStasiun(G);
+        while (nama(p) != data && nextStasiun(p)!=NULL){
+            p = nextStasiun(p);
+        }
+        if (nama(p)==data){
+            return p;
+        }else{
+            return NULL;
+        }
+    }
+}
+
+void insertLastRute(Graph &G, adrStasiun stasiunP, adrRute ruteP){
+    adrRute p;
+    if (stasiunP==NULL){
+        cout << "Stasiun tidak ditemukan" << endl;
+    }else if(firstRute(stasiunP)==NULL){
+        firstRute(stasiunP) = ruteP;
+    }else{
+        p = firstRute(stasiunP);
+        while (nextRute(p)!=NULL){
+            p=nextRute(p);
+        }
+        nextRute(p)=ruteP;
+    }
+}
+
+void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga){
+    adrStasiun p1 = findStasiun(G, stasiunAsal);
+    adrStasiun p2 = findStasiun(G, stasiunTujuan);
+    if (p1!=NULL && p2!=NULL){
+        adrRute e1;
+        createRute(stasiunTujuan, jarak, harga, e1);
+        insertLastRute(G, p1, e1);
+        adrRute e2;
+        createRute(stasiunAsal, jarak, harga, e2);
+        insertLastRute(G, p2, e2);
+    }else{
+        cout << "Stasiun tidak ditemukan" << endl;
+    }
 }
 
 void deleteStasiun(Graph &G, string namaStasiun) {

@@ -5,7 +5,6 @@
 #define nextStasiun(s) s->nextStasiun
 #define firstRute(s) s->firstRute
 #define adrS(r) r->adrS
-#define namaStasiun(r) r->namaStasiun
 #define jarak(r) r->jarak
 #define harga(r) r->harga
 #define nextRute(r) r->nextRute
@@ -40,10 +39,12 @@ void buildGraph(Graph &G);
 void printStasiun(Graph G);
 void printRute(Graph G);
 void addStasiun(Graph &G, string nama);
-void addRute(adrRute &r, string namaStasiun, int jarak, int harga);
 void deleteStasiun(Graph &G, string namaStasiun);
 void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan);
 void menu();
 int degree(Graph &G, adrStasiun v);
 adrStasiun stasiunTeramai(Graph G);
+adrStasiun findStasiun(Graph G, string data);
+void insertLastRute(Graph &G, adrStasiun stasiunP, adrRute ruteP);
+void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga);
 #endif // KRL_H_INCLUDED
