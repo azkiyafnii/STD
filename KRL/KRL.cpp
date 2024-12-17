@@ -65,8 +65,15 @@ void printRute(Graph G) {
 void addStasiun(Graph &G, string nama) {
     adrStasiun s;
     createStasiun(nama, s);
-    s->nextStasiun = G.firstStasiun;
-    G.firstStasiun = s;
+    if (firstStasiun(G)==NULL){
+        firstStasiun(G) = s;
+    }else{
+        adrStasiun p = firstStasiun(G);
+        while (nextStasiun(p)!=NULL){
+            p = nextStasiun(p);
+        }
+        nextStasiun(p)=s;
+    }
 }
 
 void addRute(adrRute &r, string namaStasiun, int jarak, int harga) {

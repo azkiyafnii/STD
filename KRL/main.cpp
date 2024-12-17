@@ -7,6 +7,17 @@ int main() {
     string nama, tujuan;
     int jarak, harga;
     adrStasiun asal = NULL, ramai = NULL;
+    addStasiun(G, "Tangerang");
+    addStasiun(G, "Duri");
+    addStasiun(G, "Tanah_Abang");
+    addStasiun(G, "Rangkas_Bitung");
+    addStasiun(G, "Tanjung_Priok");
+    addStasiun(G, "Kampung_Bandan");
+    addStasiun(G, "Manggarai");
+    addStasiun(G, "Bogor");
+    addStasiun(G, "Jatinegara");
+    addStasiun(G, "Cikarang");
+
 
     while (pilihan != 8) {
         menu();
