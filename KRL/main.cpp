@@ -17,7 +17,18 @@ int main() {
     addStasiun(G, "Bogor");
     addStasiun(G, "Jatinegara");
     addStasiun(G, "Cikarang");
-    addRute(G, "Tangerang", "Duri", 50, 3000);
+    addRute(G, "Tangerang", "Duri", 23, 3000);
+    addRute(G, "Duri", "Tanah_Abang", 4, 3000);
+    addRute(G, "Tanah_Abang", "Kampung_Bandan", 9, 3000);
+    addRute(G, "Tanah_Abang", "Manggarai", 4, 3000);
+    addRute(G, "Tanah_Abang", "Rangkas_Bitung", 72, 8000);
+    addRute(G, "Manggarai", "Bogor", 48, 5000);
+    addRute(G, "Manggarai", "Jatinegara", 4, 3000);
+    addRute(G, "Manggarai", "Kampung_Bandan", 11, 3000);
+    addRute(G, "Jatinegara", "Cikarang", 25, 5000);
+    addRute(G, "Jatinegara", "Kampung_Bandan", 21, 3000);
+    addRute(G, "Kampung_Bandan", "Tanjung_Priok", 9, 3000);
+
 
 
     while (pilihan != 8) {
@@ -49,7 +60,7 @@ int main() {
                 cin >> nama;
                 cout << "Masukkan nama stasiun tujuan: ";
                 cin >> tujuan;
-                deleteRute(G, nama, tujuan);
+                disconnect(G, nama, tujuan);
                 break;
             case 5:
                 printStasiun(G);

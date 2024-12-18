@@ -40,11 +40,17 @@ void printStasiun(Graph G);
 void printRute(Graph G);
 void addStasiun(Graph &G, string nama);
 void deleteStasiun(Graph &G, string namaStasiun);
-void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan);
 void menu();
 int degree(Graph &G, adrStasiun v);
 adrStasiun stasiunTeramai(Graph G);
 adrStasiun findStasiun(Graph G, string data);
 void insertLastRute(Graph &G, adrStasiun stasiunP, adrRute ruteP);
 void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga);
+adrRute findRute(Graph G, adrStasiun pStasiun, string stasiun);
+void deleteFirstEdge(Graph &G, adrStasiun pStasiun);
+void deleteLastEdge(Graph &G, adrStasiun pStasiun);
+void deleteAfterEdge(Graph &G, adrStasiun pStasiun, adrRute prec);
+void deleteRute(Graph &G, adrStasiun pStasiun, adrRute pRute);
+void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan);
+
 #endif // KRL_H_INCLUDED
