@@ -207,34 +207,34 @@ void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int 
 void deleteStasiun(Graph &G, string namaStasiun) {
     if (firstStasiun(G)==NULL){
         cout << "Daftar Stasiun kosong" << endl;
-        return;
-    }
-
-    adrStasiun p = firstStasiun(G), prev = NULL;
-
-    while (p && nama(p) != namaStasiun){
-        prev = p;
-        p = nextStasiun(p);
-    }
-
-    if (p==NULL){
-        cout << "Stasiun tidak ditemukan" << endl;
-        return;
-    }
-
-    // Hapus semua rute yang terhubung ke stasiun
-    adrRute r = firstRute(p);
-    while (r!=NULL){
-        disconnect(G, nama(p), nama(adrS(r)));
-        r = firstRute(p);
-    }
-
-    if (prev==NULL){
-        firstStasiun(G) = nextStasiun(p);
     }else{
-        nextStasiun(prev) = nextStasiun(p);
+        adrStasiun p = firstStasiun(G), prev = NULL;
+
+        while (p!=NULL && nama(p) != namaStasiun){
+            prev = p;
+            p = nextStasiun(p);
+        }
+
+        if (p==NULL){
+           cout << "Stasiun tidak ditemukan" << endl;
+        }else{
+            // Hapus semua rute yang terhubung ke stasiun
+            adrRute r = firstRute(p);
+            while (r!=NULL){
+                disconnect(G, nama(p), nama(adrS(r)));
+                r = firstRute(p);
+            }
+            if (prev==NULL){
+                firstStasiun(G) = nextStasiun(p);
+            }else{
+                nextStasiun(prev) = nextStasiun(p);
+            }
+            p->nextStasiun = NULL;
+        }
+
     }
-    p->nextStasiun = NULL;
+
+    
 }
 /*
 void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan) {
