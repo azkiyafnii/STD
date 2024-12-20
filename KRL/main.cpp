@@ -73,7 +73,7 @@ int main() {
                 if (ramai != NULL) cout << "Stasiun teramai: " << ramai->nama << endl;
                 else cout << "Tidak ada stasiun." << endl;
                 break;
-            case 8:
+            case 0:
                 cout << "Keluar dari program." << endl;
                 break;
             default:

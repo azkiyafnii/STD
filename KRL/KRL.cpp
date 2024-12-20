@@ -289,5 +289,7 @@ void menu() {
     cout << "5. Cetak Stasiun\n";
     cout << "6. Cetak Rute\n";
     cout << "7. Stasiun Teramai\n";
-    cout << "8. Keluar\n";
+    cout << "8. Mencari harga termurah\n";
+    cout << "9. Mencari jalur alternatif\n";
+    cout << "0. Keluar\n";
 }
