@@ -47,10 +47,12 @@ adrStasiun findStasiun(Graph G, string data);
 void insertLastRute(Graph &G, adrStasiun stasiunP, adrRute ruteP);
 void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga);
 adrRute findRute(Graph G, adrStasiun pStasiun, string stasiun);
-void deleteFirstEdge(Graph &G, adrStasiun pStasiun);
-void deleteLastEdge(Graph &G, adrStasiun pStasiun);
-void deleteAfterEdge(Graph &G, adrStasiun pStasiun, adrRute prec);
+void deleteFirstRute(Graph &G, adrStasiun pStasiun);
+void deleteLastRute(Graph &G, adrStasiun pStasiun);
+void deleteAfterRute(Graph &G, adrStasiun pStasiun, adrRute prec);
 void deleteRute(Graph &G, adrStasiun pStasiun, adrRute pRute);
 void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan);
+void findShortestPath(Graph G, string asal, string tujuan);
+void findAlternatePath(Graph G, string asal, string tujuan, string problemFrom, string problemTo);
 
 #endif // KRL_H_INCLUDED

@@ -3,8 +3,8 @@
 int main() {
     Graph G;
     initGraph(G);
-    int pilihan = 0;
-    string nama, tujuan;
+    int pilihan = -1;
+    string nama, tujuan, problemFrom, problemTo;
     int jarak, harga;
     adrStasiun asal = NULL, ramai = NULL;
     addStasiun(G, "Tangerang");
@@ -31,13 +31,15 @@ int main() {
 
 
 
-    while (pilihan != 8) {
+    while (pilihan != 0) {
         menu();
         cout << "Pilih opsi: ";
         cin >> pilihan;
         switch (pilihan) {
             case 1:
-                buildGraph(G);
+                cout << "Masukkan nama stasiun baru: ";
+                cin >> nama;
+                addStasiun(G, nama);
                 break;
             case 2:
                 cout << "Masukkan nama stasiun asal: ";
@@ -70,8 +72,29 @@ int main() {
                 break;
             case 7:
                 ramai = stasiunTeramai(G);
-                if (ramai != NULL) cout << "Stasiun teramai: " << ramai->nama << endl;
-                else cout << "Tidak ada stasiun." << endl;
+                if (ramai != NULL) {
+                    cout << "Stasiun teramai: " << nama(ramai) << endl;
+                }else{
+                    cout << "Tidak ada stasiun." << endl;
+                }
+                break;
+            case 8:
+                cout << "Masukkan stasiun asal: ";
+                cin >> nama;
+                cout << "Masukkan stasiun tujuan: ";
+                cin >> tujuan;
+                findShortestPath(G, nama, tujuan);
+                break;
+            case 9:
+                cout << "Masukkan stasiun asal: ";
+                cin >> nama;
+                cout << "Masukkan stasiun tujuan: ";
+                cin >> tujuan;
+                cout << "Masukkan stasiun awal rute bermasalah: ";
+                cin >> problemFrom;
+                cout << "Masukkan stasiun tujuan rute bermasalah: ";
+                cin >> problemTo;
+                findAlternatePath(G, nama, tujuan, problemFrom, problemTo);
                 break;
             case 0:
                 cout << "Keluar dari program." << endl;

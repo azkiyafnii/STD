@@ -2,63 +2,44 @@
 
 void createStasiun(string name, adrStasiun &s) {
     s = new Stasiun;
-    s->nama = name;
-    s->nextStasiun = NULL;
-    s->firstRute = NULL;
+    nama(s) = name;
+    nextStasiun(s) = NULL;
+    firstRute(s) = NULL;
 }
 
 void createRute(string newNamaStasiun, int jarak, int harga, adrRute &r) {
     r = new Rute;
-    r->adrS = new Stasiun;
-    r->adrS->nama = newNamaStasiun;
-    r->jarak = jarak;
-    r->harga = harga;
-    r->nextRute = NULL;
+    adrS(r) = new Stasiun;
+    nama(adrS(r)) = newNamaStasiun;
+    jarak(r) = jarak;
+    harga(r) = harga;
+    nextRute(r) = NULL;
 }
 
 void initGraph(Graph &G) {
-    G.firstStasiun = NULL;
-}
-
-void buildGraph(Graph &G) {
-    string namaStasiun;
-    cout << "Masukkan 0 untuk berhenti" << endl;
-    cin >> namaStasiun;
-    while (namaStasiun != "0") {
-        bool isDuplicate = false;
-        adrStasiun temp = G.firstStasiun;
-        while (temp != NULL) {
-            if (temp->nama == namaStasiun) {
-                isDuplicate = true;
-                break;
-            }
-            temp = temp->nextStasiun;
-        }
-        if (!isDuplicate) {
-            addStasiun(G, namaStasiun);
-        }
-        cin >> namaStasiun;
-    }
+    firstStasiun(G) = NULL;
 }
 
 void printStasiun(Graph G) {
-    adrStasiun p = G.firstStasiun;
+    cout << "------------------Daftar Stasiun--------------------" << endl;
+    adrStasiun p = firstStasiun(G);
     while (p != NULL) {
-        cout << "Stasiun: " << p->nama << endl;
-        p = p->nextStasiun;
+        cout << "Stasiun: " << nama(p) << endl;
+        p = nextStasiun(p);
     }
 }
 
 void printRute(Graph G) {
-    adrStasiun p = G.firstStasiun;
+    cout << "-------------------Daftar Rute----------------------\n" ;
+    adrStasiun p = firstStasiun(G);
     while (p != NULL) {
-        adrRute r = p->firstRute;
-        cout << "Rute dari " << p->nama << ":\n";
+        adrRute r = firstRute(p);
+        cout << "Rute dari " << nama(p) << ":\n";
         while (r != NULL) {
-            cout << "  Ke: " << r->adrS->nama << ", Jarak: " << r->jarak << "KM , Harga: " << r->harga << endl;
-            r = r->nextRute;
+            cout << "  Ke: " << nama(adrS(r)) << ", Jarak: " << jarak(r) << "KM, Harga: " << harga(r) << endl;
+            r = nextRute(r);
         }
-        p = p->nextStasiun;
+        p = nextStasiun(p);
     }
 }
 
@@ -120,17 +101,17 @@ adrRute findRute(Graph G, adrStasiun pStasiun, string stasiun){
     }
 }
 
-void deleteFirstEdge(Graph &G, adrStasiun pStasiun){
+void deleteFirstRute(Graph &G, adrStasiun pStasiun){
     if (firstStasiun(G) == NULL || firstRute(pStasiun) == NULL){
         cout << "Daftar Stasiun atau Rute kosong" << endl;
     }else{
         adrRute p = firstRute(pStasiun);
         firstRute(pStasiun) = nextRute(p);
-        p->nextRute = NULL;
+        nextRute(p) = NULL;
     }
 }
 
-void deleteLastEdge(Graph &G, adrStasiun pStasiun){
+void deleteLastRute(Graph &G, adrStasiun pStasiun){
     if (firstStasiun(G) == NULL || firstRute(pStasiun) == NULL){
         cout << "Daftar Stasiun atau Rute kosong" << endl;
     }else{
@@ -144,29 +125,29 @@ void deleteLastEdge(Graph &G, adrStasiun pStasiun){
         }else{
             nextRute(prev) = NULL;
         }
-        Q->nextRute = NULL;
+        nextRute(Q)= NULL;
     }
 }
 
-void deleteAfterEdge(Graph &G, adrStasiun pStasiun, adrRute prec){
+void deleteAfterRute(Graph &G, adrStasiun pStasiun, adrRute prec){
     if (prec != NULL && nextRute(prec) != NULL){
         adrRute p = nextRute(prec);
         nextRute(prec) = nextRute(p);
-        p->nextRute = NULL;
+        nextRute(p) = NULL;
     }
 }
 
 void deleteRute(Graph &G, adrStasiun pStasiun, adrRute pRute){
     if (pRute == firstRute(pStasiun)){
-        deleteFirstEdge(G, pStasiun);
+        deleteFirstRute(G, pStasiun);
     }else if (nextRute(pRute) == NULL){
-        deleteLastEdge(G, pStasiun);
+        deleteLastRute(G, pStasiun);
     }else{
         adrRute prec = firstRute(pStasiun);
         while (nextRute(prec) != pRute){
             prec = nextRute(prec);
         }
-        deleteAfterEdge(G, pStasiun, prec);
+        deleteAfterRute(G, pStasiun, prec);
     }
 }
 
@@ -180,8 +161,7 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
         if (r1 != NULL && r2 != NULL){
             deleteRute(G, s1, r1);
             deleteRute(G, s2, r2);
-        }
-        if (r1 == NULL && r2 == NULL){
+        }else{
             cout << "Rute tidak ditemukan" << endl;
         }
     }else{
@@ -190,12 +170,16 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
 }
 
 void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga){
+    //cari pointer stasiun asal
     adrStasiun p1 = findStasiun(G, stasiunAsal);
+    //cari pointer stasiun tujuan
     adrStasiun p2 = findStasiun(G, stasiunTujuan);
     if (p1!=NULL && p2!=NULL){
+        //membuat rute dari stasiun asal ke tujuan
         adrRute e1;
         createRute(stasiunTujuan, jarak, harga, e1);
         insertLastRute(G, p1, e1);
+        //membuat rute dari stasiun tujuan ke asal
         adrRute e2;
         createRute(stasiunAsal, jarak, harga, e2);
         insertLastRute(G, p2, e2);
@@ -218,7 +202,6 @@ void deleteStasiun(Graph &G, string namaStasiun) {
         if (p==NULL){
            cout << "Stasiun tidak ditemukan" << endl;
         }else{
-            // Hapus semua rute yang terhubung ke stasiun
             adrRute r = firstRute(p);
             while (r!=NULL){
                 disconnect(G, nama(p), nama(adrS(r)));
@@ -229,67 +212,253 @@ void deleteStasiun(Graph &G, string namaStasiun) {
             }else{
                 nextStasiun(prev) = nextStasiun(p);
             }
-            p->nextStasiun = NULL;
+            nextStasiun(p) = NULL;
         }
 
     }
+}
 
-    
-}
-/*
-void deleteRute(Graph &G, string namaStasiun, string namaStasiunTujuan) {
-    adrStasiun p = G.firstStasiun;
-    while (p != NULL && p->nama != namaStasiun) {
-        p = p->nextStasiun;
-    }
-    if (p != NULL) {
-        adrRute r = p->firstRute, prev = NULL;
-        while (r != NULL && r->adrS->nama != namaStasiunTujuan) {
-            prev = r;
-            r = r->nextRute;
-        }
-        if (r != NULL) {
-            if (prev == NULL) p->firstRute = r->nextRute;
-            else prev->nextRute = r->nextRute;
-            delete r;
-        }
-    }
-}
-*/
 int degree(Graph &G, adrStasiun v) {
+    //mencari rute terbanyak
     int count = 0;
-    adrRute r = v->firstRute;
+    adrRute r = firstRute(v);
     while (r != NULL) {
         count++;
-        r = r->nextRute;
+        r = nextRute(r);
     }
     return count;
 }
 
 adrStasiun stasiunTeramai(Graph G) {
-    adrStasiun p = G.firstStasiun, maxStasiun = NULL;
+    adrStasiun p = firstStasiun(G), maxStasiun = NULL;
     int maxDegree = -1;
     while (p != NULL) {
-        int d = degree(G, p);
-        if (d > maxDegree) {
-            maxDegree = d;
+        int temp = degree(G, p);
+        if (temp > maxDegree) {
+            maxDegree = temp;
             maxStasiun = p;
         }
-        p = p->nextStasiun;
+        p = nextStasiun(p);
     }
     return maxStasiun;
 }
 
+void findShortestPath(Graph G, string asal, string tujuan) {
+    const int MAX = 100; // Maksimal jumlah stasiun
+    const int INF = 1e9; // Representasi tak hingga
+
+    string stasiun[MAX];
+    int dist[MAX], cost[MAX], prev[MAX], visited[MAX];
+    int numStasiun = 0;
+    int asalIdx = -1, tujuanIdx = -1;
+
+    // Inisialisasi
+    adrStasiun p = firstStasiun(G);
+    while (p != NULL) {
+        stasiun[numStasiun] = nama(p);
+        if (nama(p) == asal) asalIdx = numStasiun;
+        if (nama(p) == tujuan) tujuanIdx = numStasiun;
+
+        dist[numStasiun] = INF;
+        cost[numStasiun] = INF;
+        prev[numStasiun] = -1;
+        visited[numStasiun] = 0;
+
+        p = nextStasiun(p);
+        numStasiun++;
+    }
+
+    if (asalIdx == -1 || tujuanIdx == -1) {
+        cout << "Stasiun asal atau tujuan tidak ditemukan.\n";
+        return;
+    }
+
+    dist[asalIdx] = 0;
+    cost[asalIdx] = 0;
+
+    // Proses Dijkstra
+    for (int i = 0; i < numStasiun; i++) {
+        int u = -1, minDist = INF;
+
+        // Cari stasiun dengan jarak terpendek yang belum dikunjungi
+        for (int j = 0; j < numStasiun; j++) {
+            if (!visited[j] && dist[j] < minDist) {
+                u = j;
+                minDist = dist[j];
+            }
+        }
+
+        if (u == -1) break;
+        visited[u] = 1;
+
+        // Perbarui jarak dan biaya ke tetangga
+        adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
+        adrRute r = firstRute(currentStasiun);
+        while (r != NULL) {
+            string neighborName = nama(adrS(r));
+            int neighborIdx = -1;
+
+            // Cari indeks tetangga
+            for (int k = 0; k < numStasiun; k++) {
+                if (stasiun[k] == neighborName) {
+                    neighborIdx = k;
+                    break;
+                }
+            }
+
+            if (neighborIdx != -1 && !visited[neighborIdx]) {
+                int weight = jarak(r);
+                int ticketPrice = harga(r);
+
+                // Perbarui jarak dan biaya jika lebih kecil
+                if (dist[u] + weight < dist[neighborIdx] ||
+                   (dist[u] + weight == dist[neighborIdx] && cost[u] + ticketPrice < cost[neighborIdx])) {
+                    dist[neighborIdx] = dist[u] + weight;
+                    cost[neighborIdx] = cost[u] + ticketPrice;
+                    prev[neighborIdx] = u;
+                }
+            }
+            r = nextRute(r);
+        }
+    }
+
+    // Konstruksi jalur
+    if (dist[tujuanIdx] == INF) {
+        cout << "Tidak ada jalur dari " << asal << " ke " << tujuan << endl;
+        return;
+    }
+
+    int path[MAX], pathLength = 0;
+    for (int at = tujuanIdx; at != -1; at = prev[at]) {
+        path[pathLength++] = at;
+    }
+
+    // Output jalur dan biaya
+    cout << "Jalur terpendek dari " << asal << " ke " << tujuan << ":\n";
+    for (int i = pathLength - 1; i >= 0; i--) {
+        cout << stasiun[path[i]];
+        if (i > 0) cout << " -> ";
+    }
+    cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM";
+    cout << "\nTotal biaya: " << cost[tujuanIdx] << " Rupiah\n";
+}
+
+void findAlternatePath(Graph G, string asal, string tujuan, string problemFrom, string problemTo) {
+    const int MAX = 100; // Maksimal jumlah stasiun
+    const int INF = 1e9; // Representasi tak hingga
+
+    string stasiun[MAX];
+    int dist[MAX], cost[MAX], prev[MAX], visited[MAX];
+    int numStasiun = 0;
+    int asalIdx = -1, tujuanIdx = -1;
+
+    // Inisialisasi
+    adrStasiun p = firstStasiun(G);
+    while (p != NULL) {
+        stasiun[numStasiun] = nama(p);
+        if (nama(p) == asal) asalIdx = numStasiun;
+        if (nama(p) == tujuan) tujuanIdx = numStasiun;
+
+        dist[numStasiun] = INF;
+        cost[numStasiun] = INF;
+        prev[numStasiun] = -1;
+        visited[numStasiun] = 0;
+
+        p = nextStasiun(p);
+        numStasiun++;
+    }
+
+    if (asalIdx == -1 || tujuanIdx == -1) {
+        cout << "Stasiun asal atau tujuan tidak ditemukan.\n";
+        return;
+    }
+
+    dist[asalIdx] = 0;
+    cost[asalIdx] = 0;
+
+    // Proses Dijkstra
+    for (int i = 0; i < numStasiun; i++) {
+        int u = -1, minDist = INF;
+
+        // Cari stasiun dengan jarak terpendek yang belum dikunjungi
+        for (int j = 0; j < numStasiun; j++) {
+            if (!visited[j] && dist[j] < minDist) {
+                u = j;
+                minDist = dist[j];
+            }
+        }
+
+        if (u == -1) break;
+        visited[u] = 1;
+
+        // Perbarui jarak dan biaya ke tetangga
+        adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
+        adrRute r = firstRute(currentStasiun);
+        while (r != NULL) {
+            string neighborName = nama(adrS(r));
+            int neighborIdx = -1;
+
+            // Cari indeks tetangga
+            for (int k = 0; k < numStasiun; k++) {
+                if (stasiun[k] == neighborName) {
+                    neighborIdx = k;
+                    break;
+                }
+            }
+
+            // Abaikan rute bermasalah
+            if (nama(currentStasiun) == problemFrom && neighborName == problemTo) {
+                r = nextRute(r);
+                continue;
+            }
+
+            if (neighborIdx != -1 && !visited[neighborIdx]) {
+                int weight = jarak(r);
+                int price = harga(r); // Biaya tambahan
+
+                // Perbarui jarak dan biaya jika lebih kecil
+                if (dist[u] + weight < dist[neighborIdx]) {
+                    dist[neighborIdx] = dist[u] + weight;
+                    cost[neighborIdx] = cost[u] + price;
+                    prev[neighborIdx] = u;
+                }
+            }
+            r = nextRute(r);
+        }
+    }
+
+    // Konstruksi jalur
+    if (dist[tujuanIdx] == INF) {
+        cout << "Tidak ada jalur alternatif dari " << asal << " ke " << tujuan << endl;
+        return;
+    }
+
+    int path[MAX], pathLength = 0;
+    for (int at = tujuanIdx; at != -1; at = prev[at]) {
+        path[pathLength++] = at;
+    }
+
+    // Output jalur
+    cout << "Jalur alternatif dari " << asal << " ke " << tujuan << ":\n";
+    for (int i = pathLength - 1; i >= 0; i--) {
+        cout << stasiun[path[i]];
+        if (i > 0) cout << " -> ";
+    }
+    cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM\n";
+    cout << "Total biaya: Rp" << cost[tujuanIdx] << endl;
+}
+
 void menu() {
-    cout << "Menu Graph KRL:\n";
+    cout << "-----------------Menu Aplikasi KRL------------------\n";
     cout << "1. Tambah Stasiun\n";
     cout << "2. Tambah Rute\n";
     cout << "3. Hapus Stasiun\n";
     cout << "4. Hapus Rute\n";
-    cout << "5. Cetak Stasiun\n";
-    cout << "6. Cetak Rute\n";
-    cout << "7. Stasiun Teramai\n";
-    cout << "8. Mencari harga termurah\n";
+    cout << "5. Info Stasiun\n";
+    cout << "6. Info Rute\n";
+    cout << "7. Cek Stasiun Teramai\n";
+    cout << "8. Mencari jalur terpendek\n";
     cout << "9. Mencari jalur alternatif\n";
     cout << "0. Keluar\n";
+    cout << "----------------------------------------------------\n";
 }
