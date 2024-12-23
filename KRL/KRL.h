@@ -52,7 +52,7 @@ void deleteLastRute(Graph &G, adrStasiun pStasiun);
 void deleteAfterRute(Graph &G, adrStasiun pStasiun, adrRute prec);
 void deleteRute(Graph &G, adrStasiun pStasiun, adrRute pRute);
 void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan);
-void findShortestPath(Graph G, string asal, string tujuan);
-void findAlternatePath(Graph G, string asal, string tujuan, string problemFrom, string problemTo);
+void mencariJalurTerpendek(Graph G, string asal, string tujuan);
+void mencariJalurAlternatif(Graph G, string asal, string tujuan, string problemFrom, string problemTo);
 
 #endif // KRL_H_INCLUDED

@@ -243,7 +243,7 @@ adrStasiun stasiunTeramai(Graph G) {
     return maxStasiun;
 }
 
-void findShortestPath(Graph G, string asal, string tujuan) {
+void mencariJalurTerpendek(Graph G, string asal, string tujuan) {
     const int MAX = 100; // Maksimal jumlah stasiun
     const int INF = 1e9; // Representasi tak hingga
 
@@ -343,7 +343,7 @@ void findShortestPath(Graph G, string asal, string tujuan) {
     cout << "\nTotal biaya: " << cost[tujuanIdx] << " Rupiah\n";
 }
 
-void findAlternatePath(Graph G, string asal, string tujuan, string problemFrom, string problemTo) {
+void mencariJalurAlternatif(Graph G, string asal, string tujuan, string problemFrom, string problemTo) {
     const int MAX = 100; // Maksimal jumlah stasiun
     const int INF = 1e9; // Representasi tak hingga
 

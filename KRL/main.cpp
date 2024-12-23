@@ -83,7 +83,7 @@ int main() {
                 cin >> nama;
                 cout << "Masukkan stasiun tujuan: ";
                 cin >> tujuan;
-                findShortestPath(G, nama, tujuan);
+                mencariJalurTerpendek(G, nama, tujuan);
                 break;
             case 9:
                 cout << "Masukkan stasiun asal: ";
@@ -94,7 +94,7 @@ int main() {
                 cin >> problemFrom;
                 cout << "Masukkan stasiun tujuan rute bermasalah: ";
                 cin >> problemTo;
-                findAlternatePath(G, nama, tujuan, problemFrom, problemTo);
+                mencariJalurAlternatif(G, nama, tujuan, problemFrom, problemTo);
                 break;
             case 0:
                 cout << "Keluar dari program." << endl;
