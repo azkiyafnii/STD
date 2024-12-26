@@ -12,6 +12,9 @@
 
 using namespace std;
 
+const int MAX = 100; // Maksimal jumlah stasiun
+const int INF = 1e9; // Representasi tak hingga
+
 typedef struct Stasiun* adrStasiun;
 typedef struct Rute* adrRute;
 

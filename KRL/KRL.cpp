@@ -170,9 +170,9 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
 }
 
 void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga){
-    //cari pointer stasiun asal
+    //membuat pointer stasiun asal
     adrStasiun p1 = findStasiun(G, stasiunAsal);
-    //cari pointer stasiun tujuan
+    //membuat pointer stasiun tujuan
     adrStasiun p2 = findStasiun(G, stasiunTujuan);
     if (p1!=NULL && p2!=NULL){
         //membuat rute dari stasiun asal ke tujuan
@@ -189,16 +189,17 @@ void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int 
 }
 
 void deleteStasiun(Graph &G, string namaStasiun) {
+    //mengecek graph kosong atau tidak
     if (firstStasiun(G)==NULL){
         cout << "Daftar Stasiun kosong" << endl;
     }else{
+        //mencari stasiun
         adrStasiun p = firstStasiun(G), prev = NULL;
-
         while (p!=NULL && nama(p) != namaStasiun){
             prev = p;
             p = nextStasiun(p);
         }
-
+        //mengecek stasiun yang akan dihapus ada atau tidak
         if (p==NULL){
            cout << "Stasiun tidak ditemukan" << endl;
         }else{
@@ -230,6 +231,7 @@ int degree(Graph &G, adrStasiun v) {
 }
 
 adrStasiun stasiunTeramai(Graph G) {
+    //return alamat stasiun Teramai
     adrStasiun p = firstStasiun(G), maxStasiun = NULL;
     int maxDegree = -1;
     while (p != NULL) {
@@ -244,25 +246,22 @@ adrStasiun stasiunTeramai(Graph G) {
 }
 
 void mencariJalurTerpendek(Graph G, string asal, string tujuan) {
-    const int MAX = 100; // Maksimal jumlah stasiun
-    const int INF = 1e9; // Representasi tak hingga
-
-    string stasiun[MAX];
-    int dist[MAX], cost[MAX], prev[MAX], visited[MAX];
+    string stasiun[MAX]; // Array untuk menyimpan nama-nama stasiun
+    int dist[MAX], cost[MAX], prev[MAX], visited[MAX]; // Array untuk jarak, biaya, jalur sebelumnya, dan status kunjungan
     int numStasiun = 0;
     int asalIdx = -1, tujuanIdx = -1;
 
-    // Inisialisasi
+    // Inisialisasi array dan mencari indeks stasiun asal dan tujuan
     adrStasiun p = firstStasiun(G);
     while (p != NULL) {
         stasiun[numStasiun] = nama(p);
         if (nama(p) == asal) asalIdx = numStasiun;
         if (nama(p) == tujuan) tujuanIdx = numStasiun;
 
-        dist[numStasiun] = INF;
-        cost[numStasiun] = INF;
-        prev[numStasiun] = -1;
-        visited[numStasiun] = 0;
+        dist[numStasiun] = INF; // Inisialisasi jarak awal sebagai tak hingga
+        cost[numStasiun] = INF; // Inisialisasi biaya awal sebagai tak hingga
+        prev[numStasiun] = -1; // Tidak ada jalur sebelumnya
+        visited[numStasiun] = 0; // Tandai semua stasiun belum dikunjungi
 
         p = nextStasiun(p);
         numStasiun++;
@@ -270,182 +269,194 @@ void mencariJalurTerpendek(Graph G, string asal, string tujuan) {
 
     if (asalIdx == -1 || tujuanIdx == -1) {
         cout << "Stasiun asal atau tujuan tidak ditemukan.\n";
-        return;
-    }
+    }else{
+        dist[asalIdx] = 0;
+        cost[asalIdx] = 0;
+        int unvisitedCount = numStasiun; // Hitung jumlah stasiun yang belum dikunjungi
+        // Proses Dijkstra
+        while (unvisitedCount > 0) {
+            int u = -1, minDist = INF;
 
-    dist[asalIdx] = 0;
-    cost[asalIdx] = 0;
-
-    // Proses Dijkstra
-    for (int i = 0; i < numStasiun; i++) {
-        int u = -1, minDist = INF;
-
-        // Cari stasiun dengan jarak terpendek yang belum dikunjungi
-        for (int j = 0; j < numStasiun; j++) {
-            if (!visited[j] && dist[j] < minDist) {
-                u = j;
-                minDist = dist[j];
-            }
-        }
-
-        if (u == -1) break;
-        visited[u] = 1;
-
-        // Perbarui jarak dan biaya ke tetangga
-        adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
-        adrRute r = firstRute(currentStasiun);
-        while (r != NULL) {
-            string neighborName = nama(adrS(r));
-            int neighborIdx = -1;
-
-            // Cari indeks tetangga
-            for (int k = 0; k < numStasiun; k++) {
-                if (stasiun[k] == neighborName) {
-                    neighborIdx = k;
-                    break;
+            // Cari stasiun dengan jarak terpendek yang belum dikunjungi
+            for (int j = 0; j < numStasiun; j++) {
+                if (!visited[j] && dist[j] < minDist) {
+                    u = j;
+                    minDist = dist[j];
                 }
             }
 
-            if (neighborIdx != -1 && !visited[neighborIdx]) {
-                int weight = jarak(r);
-                int ticketPrice = harga(r);
-
-                // Perbarui jarak dan biaya jika lebih kecil
-                if (dist[u] + weight < dist[neighborIdx] ||
-                   (dist[u] + weight == dist[neighborIdx] && cost[u] + ticketPrice < cost[neighborIdx])) {
-                    dist[neighborIdx] = dist[u] + weight;
-                    cost[neighborIdx] = cost[u] + ticketPrice;
-                    prev[neighborIdx] = u;
-                }
+            // Jika tidak ada stasiun yang dapat dijangkau, keluar dari loop
+            if (u == -1) {
+                unvisitedCount = 0; // Menandai semua stasiun telah diproses
+                continue; // Melanjutkan ke akhir iterasi
             }
-            r = nextRute(r);
+
+            // Tandai stasiun ini telah dikunjungi
+            visited[u] = 1;
+            unvisitedCount--;
+
+            // Perbarui jarak dan biaya ke tetangga-tetangga stasiun saat ini
+            adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
+            adrRute r = firstRute(currentStasiun);
+            while (r != NULL) {
+                string neighborName = nama(adrS(r));
+                int neighborIdx = -1;
+
+                // Cari indeks stasiun tetangga
+                int k =0;
+                while(k<numStasiun && neighborIdx == -1){
+                    if (stasiun[k]==neighborName){
+                        neighborIdx = k;
+                    }
+                    k++;
+                }
+
+                // Jika tetangga belum dikunjungi, perbarui jarak dan biaya
+                if (neighborIdx != -1 && !visited[neighborIdx]) {
+                    int weight = jarak(r); // Ambil jarak rute
+                    int ticketPrice = harga(r); // Ambil harga tiket
+
+                    // Periksa apakah jarak lebih kecil atau jika sama, biaya lebih kecil
+                    if (dist[u] + weight < dist[neighborIdx] || (dist[u] + weight == dist[neighborIdx] && cost[u] + ticketPrice < cost[neighborIdx])) {
+                        dist[neighborIdx] = dist[u] + weight; // Perbarui jarak
+                        cost[neighborIdx] = cost[u] + ticketPrice; // Perbarui biaya
+                        prev[neighborIdx] = u; // Simpan jalur sebelumnya
+                    }
+                }
+                r = nextRute(r); // Lanjutkan ke rute berikutnya
+            }
+        }
+
+        // Konstruksi jalur
+        if (dist[tujuanIdx] == INF) {
+            cout << "Tidak ada jalur dari " << asal << " ke " << tujuan << endl;
+        }else{
+            // menyimpan indeks stasiun dalam jalur
+            int path[MAX], pathLength = 0;
+            for (int at = tujuanIdx; at != -1; at = prev[at]) {
+                path[pathLength++] = at;
+            }
+
+            // Output jalur dan biaya
+            cout << "Jalur terpendek dari " << asal << " ke " << tujuan << ":\n";
+            for (int i = pathLength - 1; i >= 0; i--) {
+                cout << stasiun[path[i]];
+                if (i > 0) cout << " -> ";
+            }
+            cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM";
+            cout << "\nTotal biaya: " << cost[tujuanIdx] << " Rupiah\n";
         }
     }
 
-    // Konstruksi jalur
-    if (dist[tujuanIdx] == INF) {
-        cout << "Tidak ada jalur dari " << asal << " ke " << tujuan << endl;
-        return;
-    }
-
-    int path[MAX], pathLength = 0;
-    for (int at = tujuanIdx; at != -1; at = prev[at]) {
-        path[pathLength++] = at;
-    }
-
-    // Output jalur dan biaya
-    cout << "Jalur terpendek dari " << asal << " ke " << tujuan << ":\n";
-    for (int i = pathLength - 1; i >= 0; i--) {
-        cout << stasiun[path[i]];
-        if (i > 0) cout << " -> ";
-    }
-    cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM";
-    cout << "\nTotal biaya: " << cost[tujuanIdx] << " Rupiah\n";
 }
 
 void mencariJalurAlternatif(Graph G, string asal, string tujuan, string problemFrom, string problemTo) {
-    const int MAX = 100; // Maksimal jumlah stasiun
-    const int INF = 1e9; // Representasi tak hingga
+    string stasiun[MAX]; // Array untuk menyimpan nama stasiun
+    int dist[MAX], cost[MAX], prev[MAX], visited[MAX]; // Array untuk menyimpan jarak, biaya, jalur sebelumnya, dan status kunjungan
+    int numStasiun = 0; // Jumlah total stasiun
+    int asalIdx = -1, tujuanIdx = -1; // Indeks untuk stasiun asal dan tujuan
 
-    string stasiun[MAX];
-    int dist[MAX], cost[MAX], prev[MAX], visited[MAX];
-    int numStasiun = 0;
-    int asalIdx = -1, tujuanIdx = -1;
-
-    // Inisialisasi
+    // Inisialisasi semua data stasiun dalam graf
     adrStasiun p = firstStasiun(G);
     while (p != NULL) {
-        stasiun[numStasiun] = nama(p);
-        if (nama(p) == asal) asalIdx = numStasiun;
-        if (nama(p) == tujuan) tujuanIdx = numStasiun;
+        stasiun[numStasiun] = nama(p); // Simpan nama stasiun
+        if (nama(p) == asal) asalIdx = numStasiun; // Identifikasi indeks stasiun asal
+        if (nama(p) == tujuan) tujuanIdx = numStasiun; // Identifikasi indeks stasiun tujuan
 
-        dist[numStasiun] = INF;
-        cost[numStasiun] = INF;
-        prev[numStasiun] = -1;
-        visited[numStasiun] = 0;
+        dist[numStasiun] = INF; //jarak
+        cost[numStasiun] = INF;//biaya
+        prev[numStasiun] = -1; //jalur sebelumnya
+        visited[numStasiun] = 0; //status belum dikunjungi
 
         p = nextStasiun(p);
         numStasiun++;
     }
-
+    // mengecek apakah stasiun asal dan tujuan ditemukan
     if (asalIdx == -1 || tujuanIdx == -1) {
         cout << "Stasiun asal atau tujuan tidak ditemukan.\n";
-        return;
-    }
+    }else{
+        dist[asalIdx] = 0;
+        cost[asalIdx] = 0;
+        int unvisitedCount = numStasiun; // inisialisasi dengan jumlah stasiun yang belum dikunjungi
+        // Proses Dijkstra
+        while (unvisitedCount > 0) {
+            int u = -1, minDist = INF;
 
-    dist[asalIdx] = 0;
-    cost[asalIdx] = 0;
-
-    // Proses Dijkstra
-    for (int i = 0; i < numStasiun; i++) {
-        int u = -1, minDist = INF;
-
-        // Cari stasiun dengan jarak terpendek yang belum dikunjungi
-        for (int j = 0; j < numStasiun; j++) {
-            if (!visited[j] && dist[j] < minDist) {
-                u = j;
-                minDist = dist[j];
-            }
-        }
-
-        if (u == -1) break;
-        visited[u] = 1;
-
-        // Perbarui jarak dan biaya ke tetangga
-        adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
-        adrRute r = firstRute(currentStasiun);
-        while (r != NULL) {
-            string neighborName = nama(adrS(r));
-            int neighborIdx = -1;
-
-            // Cari indeks tetangga
-            for (int k = 0; k < numStasiun; k++) {
-                if (stasiun[k] == neighborName) {
-                    neighborIdx = k;
-                    break;
+            // Mencari stasiun dengan jarak terpendek yang belum dikunjungi
+            for (int j = 0; j < numStasiun; j++) {
+                if (!visited[j] && dist[j] < minDist) {
+                    u = j;
+                    minDist = dist[j];
                 }
             }
 
-            // Abaikan rute bermasalah
-            if (nama(currentStasiun) == problemFrom && neighborName == problemTo) {
-                r = nextRute(r);
-                continue;
+            // Jika tidak ada stasiun yang dapat dijangkau, keluar dari loop
+            if (u == -1) {
+                unvisitedCount = 0; // Tandai semua stasiun telah diproses
+                continue; // Melanjutkan proses iterasi
             }
 
-            if (neighborIdx != -1 && !visited[neighborIdx]) {
-                int weight = jarak(r);
-                int price = harga(r); // Biaya tambahan
+            // Tandai stasiun ini telah dikunjungi
+            visited[u] = 1;
+            unvisitedCount--;
 
-                // Perbarui jarak dan biaya jika lebih kecil
-                if (dist[u] + weight < dist[neighborIdx]) {
-                    dist[neighborIdx] = dist[u] + weight;
-                    cost[neighborIdx] = cost[u] + price;
-                    prev[neighborIdx] = u;
+            // Perbarui jarak dan biaya ke tetangga-tetangga stasiun saat ini
+            adrStasiun currentStasiun = findStasiun(G, stasiun[u]);
+            adrRute r = firstRute(currentStasiun);
+            while (r != NULL) {
+                string neighborName = nama(adrS(r));
+                int neighborIdx = -1;
+
+                // Cari indeks stasiun tetangga
+                int k=0;
+                while(k<numStasiun && neighborIdx == -1){
+                    if (stasiun[k]==neighborName){
+                        neighborIdx = k;
+                    }
+                    k++;
                 }
+
+                // Abaikan rute bermasalah
+                if ((nama(currentStasiun) == problemFrom && neighborName == problemTo) ||
+                    (nama(currentStasiun) == problemTo && neighborName == problemFrom)) {
+                    r = nextRute(r); // Lanjutkan ke rute berikutnya jika bermasalah
+                    continue;
+                }
+
+                if (neighborIdx != -1 && !visited[neighborIdx]) {
+                    int weight = jarak(r); // Ambil jarak rute
+                    int price = harga(r); // Biaya tambahan
+
+                    // Perbarui jarak dan biaya jika lebih kecil
+                    if (dist[u] + weight < dist[neighborIdx]) {
+                        dist[neighborIdx] = dist[u] + weight; // Perbarui jarak
+                        cost[neighborIdx] = cost[u] + price; // Perbarui biaya
+                        prev[neighborIdx] = u; // Simpan jalur sebelumnya
+                    }
+                }
+                r = nextRute(r); // Lanjutkan ke rute berikutnya
             }
-            r = nextRute(r);
+        }
+
+        if (dist[tujuanIdx] == INF) {
+            cout << "Tidak ada jalur alternatif dari " << asal << " ke " << tujuan << endl;
+        }else{
+            // Membuat jalur
+            int path[MAX], pathLength = 0;
+            for (int at = tujuanIdx; at != -1; at = prev[at]) {
+                path[pathLength++] = at;
+            }
+
+            // Output jalur
+            cout << "Jalur alternatif dari " << asal << " ke " << tujuan << ":\n";
+            for (int i = pathLength - 1; i >= 0; i--) {
+                cout << stasiun[path[i]];
+                if (i > 0) cout << " -> ";
+            }
+            cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM\n";
+            cout << "Total biaya: Rp" << cost[tujuanIdx] << endl;
         }
     }
-
-    // Konstruksi jalur
-    if (dist[tujuanIdx] == INF) {
-        cout << "Tidak ada jalur alternatif dari " << asal << " ke " << tujuan << endl;
-        return;
-    }
-
-    int path[MAX], pathLength = 0;
-    for (int at = tujuanIdx; at != -1; at = prev[at]) {
-        path[pathLength++] = at;
-    }
-
-    // Output jalur
-    cout << "Jalur alternatif dari " << asal << " ke " << tujuan << ":\n";
-    for (int i = pathLength - 1; i >= 0; i--) {
-        cout << stasiun[path[i]];
-        if (i > 0) cout << " -> ";
-    }
-    cout << "\nTotal jarak: " << dist[tujuanIdx] << " KM\n";
-    cout << "Total biaya: Rp" << cost[tujuanIdx] << endl;
 }
 
 void menu() {
