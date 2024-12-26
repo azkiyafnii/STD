@@ -50,7 +50,11 @@ int main() {
                 cin >> jarak;
                 cout << "Masukkan harga: ";
                 cin >> harga;
-                addRute(G, nama, tujuan, jarak, harga);
+                if (jarak < 0 || harga < 0){
+                    cout << "Error : Anda tidak bisa memasukkan angka negatif" << endl;
+                }else{
+                    addRute(G, nama, tujuan, jarak, harga);
+                }
                 break;
             case 3:
                 cout << "Masukkan nama stasiun yang akan dihapus: ";

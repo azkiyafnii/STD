@@ -393,7 +393,7 @@ void mencariJalurAlternatif(Graph G, string asal, string tujuan, string problemF
             // Jika tidak ada stasiun yang dapat dijangkau, keluar dari loop
             if (u == -1) {
                 unvisitedCount = 0; // Tandai semua stasiun telah diproses
-                continue; // Melanjutkan proses iterasi
+                continue; // Melanjutkan ke iterasi terakhir
             }
 
             // Tandai stasiun ini telah dikunjungi
