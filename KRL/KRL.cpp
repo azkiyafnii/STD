@@ -44,16 +44,26 @@ void printRute(Graph G) {
 }
 
 void addStasiun(Graph &G, string nama) {
-    adrStasiun s;
-    createStasiun(nama, s);
-    if (firstStasiun(G)==NULL){
-        firstStasiun(G) = s;
-    }else{
-        adrStasiun p = firstStasiun(G);
-        while (nextStasiun(p)!=NULL){
-            p = nextStasiun(p);
+    bool ketemu = false;
+    adrStasiun p = firstStasiun(G);
+    while(p!=NULL && ketemu != true){
+        if(nama(p)==nama){
+            cout << "Error: Nama stasiun \"" << nama << "\" sudah ada!" << endl;
         }
-        nextStasiun(p)=s;
+        p=nextStasiun(p);
+    }
+    if(!ketemu){
+        adrStasiun s;
+        createStasiun(nama, s);
+        if (firstStasiun(G)==NULL){
+            firstStasiun(G) = s;
+        }else{
+            p = firstStasiun(G);
+            while (nextStasiun(p)!=NULL){
+                p = nextStasiun(p);
+            }
+            nextStasiun(p)=s;
+        }
     }
 }
 
@@ -165,7 +175,7 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
             cout << "Rute tidak ditemukan" << endl;
         }
     }else{
-        cout << "Stasiun tidak ditemukan" << endl;
+        cout << "Stasiun tidak ditemukan " << endl;
     }
 }
 
