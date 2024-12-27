@@ -181,22 +181,33 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
     }
 }
 
-void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga){
-    //membuat pointer stasiun asal
+void addRute(Graph &G, string stasiunAsal, string stasiunTujuan, int jarak, int harga) {
+    // Membuat pointer stasiun asal
     adrStasiun p1 = findStasiun(G, stasiunAsal);
-    //membuat pointer stasiun tujuan
+    // Membuat pointer stasiun tujuan
     adrStasiun p2 = findStasiun(G, stasiunTujuan);
-    if (p1!=NULL && p2!=NULL){
-        //membuat rute dari stasiun asal ke tujuan
-        adrRute e1;
-        createRute(stasiunTujuan, jarak, harga, e1);
-        insertLastRute(G, p1, e1);
-        //membuat rute dari stasiun tujuan ke asal
-        adrRute e2;
-        createRute(stasiunAsal, jarak, harga, e2);
-        insertLastRute(G, p2, e2);
-    }else{
-        cout << "Stasiun tidak ditemukan" << endl;
+
+    if (p1 != NULL && p2 != NULL) {
+        // Pengecekan apakah rute
+        bool ketemu = false;
+        adrRute r = firstRute(p1);
+        while (r != NULL && ketemu == false) {
+            if (nama(adrS(r)) == stasiunTujuan) {
+                cout << "Error: Rute dari \"" << stasiunAsal << "\" ke \"" << stasiunTujuan << "\" sudah ada!" << endl;
+                ketemu = true;
+            }
+            r = nextRute(r);
+        }
+        if (!ketemu){
+            adrRute e1;
+            createRute(stasiunTujuan, jarak, harga, e1);
+            insertLastRute(G, p1, e1);
+            adrRute e2;
+            createRute(stasiunAsal, jarak, harga, e2);
+            insertLastRute(G, p2, e2);
+        }
+    } else {
+        cout << "Error: Salah satu atau kedua stasiun tidak ditemukan!" << endl;
     }
 }
 
