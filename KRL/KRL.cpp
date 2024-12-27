@@ -172,6 +172,7 @@ void disconnect(Graph &G, string stasiunAsal, string stasiunTujuan){
         if (r1 != NULL && r2 != NULL){
             deleteRute(G, s1, r1);
             deleteRute(G, s2, r2);
+            cout << "Rute berhasil dihapus" << endl;
         }else{
             cout << "Rute tidak ditemukan" << endl;
         }
